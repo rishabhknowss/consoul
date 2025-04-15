@@ -161,9 +161,9 @@ export default function Page() {
     const imageComponent = (
       <motion.div
         key={`${section.id}-${activeFeatureIndex}`}
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5, ease: "easeInOut" }}
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
         className="relative h-[300px] w-full rounded-lg order-last md:order-none">
         <div className="w-full h-full flex items-center justify-center">
           <Image
@@ -190,20 +190,9 @@ export default function Page() {
               (index === 0 && activeFeaturesMap[section.id] === 0);
 
             return (
-              <motion.div
+              <div
                 key={index}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{
-                  duration: 0.3,
-                  delay: index * 0.1,
-                  ease: "easeInOut",
-                }}
-                className={`relative pl-6 cursor-pointer group ${
-                  isActive
-                    ? "bg-[#E2E9FF] rounded-lg p-3 md:py-3 md:bg-white"
-                    : "bg-white md:bg-white"
-                }`}
+                className="relative pl-6 cursor-pointer group"
                 onClick={() => {
                   setActiveSection(section.id);
                   setActiveFeaturesMap((prev) => ({
@@ -211,28 +200,52 @@ export default function Page() {
                     [section.id]: index,
                   }));
                 }}>
-                <div
-                  className={`hidden md:block absolute left-0 top-0 w-1 h-full transition-all duration-300 rounded-t-full rounded-b-full ${
-                    isActive ? "bg-[#6438C3]" : "bg-purple-100"
-                  }`}
-                />
-                <div className="text-center md:text-left">
-                  <h3
-                    className={`text-xl font-semibold mb-2 transition-colors duration-300 ${
-                      isActive
-                        ? "text-[#555555] md:text-[#6438C3]"
-                        : "text-[#555555] md:text-gray-800 group-hover:text-[#6438C3]"
-                    }`}>
-                    {feature.title}
-                  </h3>
-                  <p
-                    className={`text-[#8C8C8C] ${
-                      isActive ? "block" : "hidden md:block"
-                    }`}>
-                    {feature.description}
-                  </p>
+                <div className="hidden md:block absolute left-0 top-0 w-1 h-full bg-transparent">
+                  {isActive && (
+                    <motion.div
+                      layoutId={`active-indicator-${section.id}`}
+                      className="absolute -left-0.5 top-0 w-2 h-full bg-[#6438C3] rounded-full"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 200,
+                        damping: 25,
+                        mass: 1.2,
+                        duration: 0.7,
+                      }}
+                    />
+                  )}
                 </div>
-              </motion.div>
+
+                <motion.div
+                  layout
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{
+                    layout: { type: "spring", stiffness: 200, damping: 25 },
+                    duration: 0.3,
+                    delay: index * 0.1,
+                    ease: "easeInOut",
+                  }}>
+                  <div className="text-left">
+                    <h3
+                      className={`text-xl font-semibold mb-2 transition-colors duration-300 ${
+                        isActive
+                          ? "text-[#6438C3]"
+                          : "text-gray-800 group-hover:text-[#6438C3]"
+                      }`}>
+                      {feature.title}
+                    </h3>
+                    <p
+                      className={`text-[#8C8C8C] ${
+                        isActive ? "block" : "hidden md:block"
+                      }`}>
+                      {feature.description}
+                    </p>
+                  </div>
+                </motion.div>
+              </div>
             );
           })}
         </div>
@@ -243,10 +256,10 @@ export default function Page() {
       <div className="grid md:grid-cols-2 gap-12 items-center">
         {isMiddleSection ? (
           <>
-            <FadeAnimation direction="fadeLeft" duration={0.8} delay={0.2}>
+            <FadeAnimation direction="fadeUp" duration={0.8} delay={0.2}>
               <div className="order-last md:order-first">{imageComponent}</div>
             </FadeAnimation>
-            <FadeAnimation direction="fadeRight" duration={0.8} delay={0.3}>
+            <FadeAnimation direction="fadeUp" duration={0.8} delay={0.3}>
               <div className="order-first md:order-last">
                 {featuresComponent}
               </div>
@@ -254,10 +267,10 @@ export default function Page() {
           </>
         ) : (
           <>
-            <FadeAnimation direction="fadeRight" duration={0.8} delay={0.2}>
+            <FadeAnimation direction="fadeUp" duration={0.8} delay={0.2}>
               <div>{featuresComponent}</div>
             </FadeAnimation>
-            <FadeAnimation direction="fadeLeft" duration={0.8} delay={0.3}>
+            <FadeAnimation direction="fadeUp" duration={0.8} delay={0.3}>
               <div className="order-last md:order-none">{imageComponent}</div>
             </FadeAnimation>
           </>
